@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单元测试报告 · 校园失物招领</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+<style>
+  :root{
+    --pass:#00A96E; --pass-soft:#E6F8F1;
+    --fail:#E5484D; --fail-soft:#FFF0F0;
+    --ink:#171A21; --ink-2:#5B6273; --ink-3:#9BA1B0;
+    --line:#E9ECF3; --bg:#F4F6FB;
+    --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    --mono:"SFMono-Regular",Consolas,Menlo,monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; padding:32px 24px 72px; background:var(--bg); color:var(--ink);
+    font-family:var(--font); font-size:14px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:920px; margin:0 auto; }
+  h1{ font-size:24px; font-weight:800; letter-spacing:-.01em; margin:0 0 6px; }
+  .sub{ color:var(--ink-3); font-size:13.5px; margin:0 0 24px; }
+
+  .summary{
+    display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    padding:22px 26px; margin-bottom:22px;
+    box-shadow:0 1px 2px rgba(23,26,33,.05);
+    border-left:5px solid var(--pass);
+  }
+  .summary.is-fail{ border-left-color:var(--fail); }
+  .summary__verdict{ font-size:20px; font-weight:800; }
+  .summary.is-fail .summary__verdict{ color:var(--fail); }
+  .summary:not(.is-fail) .summary__verdict{ color:var(--pass); }
+  .summary__nums{ display:flex; gap:22px; margin-left:auto; }
+  .summary__nums div{ text-align:center; }
+  .summary__nums b{ display:block; font-size:22px; font-weight:800; font-variant-numeric:tabular-nums; }
+  .summary__nums span{ font-size:11.5px; color:var(--ink-3); }
+  .n-pass b{ color:var(--pass); }
+  .n-fail b{ color:var(--fail); }
+
+  .bar{ height:8px; background:#E7EAF2; border-radius:99px; overflow:hidden; margin-bottom:26px; }
+  .bar > i{ display:block; height:100%; background:var(--pass); border-radius:99px; transition:width .5s; }
+  .summary.is-fail ~ .bar > i{ background:var(--fail); }
+
+  .suite{
+    background:#fff; border:1px solid var(--line); border-radius:14px;
+    margin-bottom:14px; overflow:hidden; box-shadow:0 1px 2px rgba(23,26,33,.04);
+  }
+  .suite__head{
+    display:flex; align-items:center; gap:10px;
+    padding:14px 18px; border-bottom:1px solid var(--line);
+    font-weight:700; font-size:14.5px; background:#FBFCFE;
+  }
+  .suite__badge{
+    margin-left:auto; font-size:12px; font-weight:700;
+    padding:3px 10px; border-radius:99px;
+    background:var(--pass-soft); color:var(--pass);
+  }
+  .suite.has-fail .suite__badge{ background:var(--fail-soft); color:var(--fail); }
+  .suite.has-fail .suite__head{ background:#FFFAFA; }
+
+  .test{
+    display:flex; align-items:flex-start; gap:11px;
+    padding:10px 18px; border-bottom:1px solid #F4F6FA; font-size:13.5px;
+  }
+  .test:last-child{ border-bottom:0; }
+  .test__mark{
+    flex:none; width:18px; height:18px; border-radius:50%; margin-top:2px;
+    display:grid; place-items:center; font-size:11px; font-weight:800; color:#fff;
+  }
+  .test.pass .test__mark{ background:var(--pass); }
+  .test.fail .test__mark{ background:var(--fail); }
+  .test.fail{ background:var(--fail-soft); }
+  .test.fail .test__name{ color:var(--fail); font-weight:600; }
+  .test__err{
+    display:block; margin-top:6px; padding:9px 12px;
+    background:#fff; border:1px solid #FBD5D5; border-radius:8px;
+    font-family:var(--mono); font-size:12px; line-height:1.65; color:#B4232A;
+    white-space:pre-wrap; word-break:break-word;
+  }
+  .empty{ color:var(--ink-3); }
+  footer{ margin-top:30px; font-size:12.5px; color:var(--ink-3); line-height:1.9; }
+  code{ font-family:var(--mono); background:#EDF0F7; padding:1px 5px; border-radius:4px; font-size:12px; }
+  .btn{
+    display:inline-flex; align-items:center; height:38px; padding:0 18px;
+    border:0; border-radius:9px; background:var(--ink); color:#fff;
+    font:inherit; font-weight:600; cursor:pointer;
+  }
+  .btn:hover{ opacity:.88; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>单元测试报告</h1>
+  <p class="sub">
+    校园失物招领 · 测试对象 <code>js/core.js</code> ·
+    框架 <code>test/mini-test.js</code>（零依赖，浏览器直跑）
+  </p>
+
+  <div id="report"></div>
+
+  <footer>
+    <p>
+      本页无需 Node 或任何构建工具，用 Chrome 直接打开本文件即可运行全部用例。
+      测试用例位于 <code>test/core.test.js</code>，断言库位于 <code>test/mini-test.js</code>。
+    </p>
+    <p style="margin-top:8px">
+      重新运行：<button class="btn" onclick="location.reload()">刷新页面</button>
+    </p>
+  </footer>
+</div>
+
+<!-- 被测代码 -->
+<script src="../js/core.js"></script>
+<!-- 断言库 -->
+<script src="mini-test.js"></script>
+<!-- 测试用例 -->
+<script src="core.test.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var results = window.MiniTest.run();
+  var rate = results.total ? Math.round((results.passed / results.total) * 100) : 0;
+  var allPass = results.failed === 0;
+
+  var html = '';
+
+  html += '<div class="summary' + (allPass ? '' : ' is-fail') + '">' +
+    '<div class="summary__verdict">' + (allPass ? '✅ 全部通过' : '❌ 有 ' + results.failed + ' 个用例失败') + '</div>' +
+    '<div class="summary__nums">' +
+      '<div class="n-pass"><b>' + results.passed + '</b><span>通过</span></div>' +
+      '<div class="n-fail"><b>' + results.failed + '</b><span>失败</span></div>' +
+      '<div><b>' + results.total + '</b><span>总计</span></div>' +
+      '<div><b>' + rate + '%</b><span>通过率</span></div>' +
+      '<div><b>' + results.duration + '</b><span>毫秒</span></div>' +
+    '</div>' +
+  '</div>';
+
+  html += '<div class="bar"><i style="width:' + rate + '%"></i></div>';
+
+  results.suites.forEach(function (suite) {
+    var failed = suite.tests.filter(function (t) { return !t.passed; }).length;
+    html += '<section class="suite' + (failed ? ' has-fail' : '') + '">' +
+      '<div class="suite__head">' + escapeHtml(suite.name) +
+        '<span class="suite__badge">' + (failed ? failed + ' / ' + suite.tests.length + ' 失败'
+                                                  : suite.tests.length + ' 通过') + '</span>' +
+      '</div>';
+    suite.tests.forEach(function (t) {
+      html += '<div class="test ' + (t.passed ? 'pass' : 'fail') + '">' +
+        '<span class="test__mark">' + (t.passed ? '✓' : '✕') + '</span>' +
+        '<span class="test__name">' + escapeHtml(t.name) +
+          (t.error ? '<span class="test__err">' + escapeHtml(t.error) + '</span>' : '') +
+        '</span>' +
+      '</div>';
+    });
+    html += '</section>';
+  });
+
+  if (!results.suites.length) {
+    html += '<p class="empty">没有找到任何测试用例，请检查 core.test.js 是否加载成功。</p>';
+  }
+
+  document.getElementById('report').innerHTML = html;
+
+  // 失败时把结论同步到标题，方便一眼看到
+  document.title = (allPass ? '✅ ' : '❌ ') + results.passed + '/' + results.total +
+    ' 通过 · 单元测试报告';
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+})();
+</script>
+</body>
+</html>
