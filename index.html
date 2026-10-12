@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="102401510">
+<meta name="description" content="校园失物招领 —— 发布寻物/招领信息、集中浏览、关键词搜索、查看详情并联系发布者、维护信息状态。纯前端实现，无需任何构建工具。">
+<title>校园失物招领</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════ 图标库（内联 sprite，避免额外请求与图标字体依赖） ══════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></symbol>
+  <symbol id="i-close"  viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-pin"    viewBox="0 0 24 24"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-clock"  viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.2V12l3.2 2"/></symbol>
+  <symbol id="i-check"  viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+  <symbol id="i-chat"   viewBox="0 0 24 24"><path d="M4 6.5h16v10H10l-4.5 3.5v-3.5H4z"/><path d="M9 11.5h.01M12 11.5h.01M15 11.5h.01"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8.5h3.2L9 6h6l1.8 2.5H20V19H4z"/><circle cx="12" cy="13" r="3.4"/></symbol>
+  <symbol id="i-edit"   viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M14.5 5.5l4 4"/></symbol>
+  <symbol id="i-trash"  viewBox="0 0 24 24"><path d="M4.5 6.5h15M9.5 6.5V4.5h5v2M6.5 6.5L7.5 20h9l1-13.5"/></symbol>
+  <symbol id="i-back"   viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 6.3"/><path d="M20 5v6h-6"/></symbol>
+  <symbol id="i-plus"   viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<!-- ══════════ 顶栏 ══════════ -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="#/list">
+      <span class="brand__mark">🔍</span>
+      <span>
+        校园失物招领
+        <span class="brand__sub" style="display:block">让每件遗失的物品都能回家</span>
+      </span>
+    </a>
+
+    <div class="topbar__search">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input id="searchInput" type="search" autocomplete="off"
+             placeholder="搜索物品名称或地点，空格分隔可多个关键词">
+      <button class="topbar__clear" id="searchClear" type="button" title="清空" hidden>
+        <svg class="icon" style="width:13px;height:13px"><use href="#i-close"/></svg>
+      </button>
+    </div>
+
+    <nav class="topbar__actions">
+      <a class="navlink" href="#/list" data-nav="list">首页</a>
+      <a class="navlink" href="#/mine" data-nav="mine">我的发布</a>
+      <a class="btn btn--primary" href="#/publish">
+        <svg class="icon" style="width:16px;height:16px"><use href="#i-plus"/></svg>发布信息
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════ 主体 ══════════ -->
+<div class="layout" id="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content" id="content"></main>
+</div>
+
+<footer class="footer">
+  <p>
+    <b>校园失物招领</b> · 2026 秋 软件工程 结对编程作业 ·
+    学号 102401510 · 纯前端实现，数据保存在浏览器本地
+  </p>
+  <p style="margin-top:6px">
+    本页面无需任何服务器与构建工具，用 Chrome 打开 <code>index.html</code> 即可运行。
+    单元测试请打开 <code>test/index.html</code>。
+  </p>
+</footer>
+
+<!-- ══════════ 通用弹层 ══════════ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal__panel" id="modalPanel"></div>
+</div>
+
+<!-- ══════════ 轻提示 ══════════ -->
+<div class="toast" id="toast" role="status"></div>
+
+<script src="js/core.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
